@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaint Actions - KSGMS Admin</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.25rem;
+            background-color: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .btn-back:hover {
+            background-color: var(--background);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .details-card {
+            background-color: var(--surface);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+
+        .info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .complaint-primary-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .meta-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.85rem;
+            border-radius: var(--radius-full);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-pending { background-color: rgba(245, 158, 11, 0.1); color: #D97706; }
+        .status-in-progress { background-color: rgba(59, 130, 246, 0.1); color: #2563EB; }
+        .status-resolved { background-color: rgba(16, 185, 129, 0.1); color: #059669; }
+
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; }
+        .status-pending .status-dot { background-color: #D97706; }
+        .status-in-progress .status-dot { background-color: #2563EB; }
+        .status-resolved .status-dot { background-color: #059669; }
+
+        .info-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-light);
+            margin-bottom: 0.75rem;
+        }
+
+        .description-text {
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .complaint-img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+        }
+
+        .attributes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            background-color: var(--background);
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            margin-top: 1.5rem;
+        }
+
+        .attribute {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .attr-label {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        .attr-value {
+            font-weight: 500;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Action Card Styles */
+        .action-card {
+            background-color: var(--surface);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .action-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .btn-action {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            border: none;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-in-progress {
+            background-color: var(--primary-light);
+            color: white;
+        }
+
+        .btn-in-progress:hover {
+            background-color: #2563EB;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-resolved {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .btn-resolved:hover {
+            background-color: var(--secondary-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Dark Theme adjustments */
+        [data-theme="dark"] .details-card,
+        [data-theme="dark"] .action-card {
+            background-color: var(--surface);
+            border-color: var(--border);
+        }
+
+        [data-theme="dark"] .attributes-grid {
+            background-color: #0F172A;
+            border: 1px solid var(--border);
+        }
+
+        @media (max-width: 900px) {
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body class="dashboard-page">
+    <!-- Navbar -->
+    <nav class="navbar dashboard-navbar">
+        <div class="nav-container nav-container-fluid">
+            <a href="#" class="nav-logo" style="text-decoration: none;">
+                <img src="logo.jpg" alt="KSGMS Logo" class="logo-icon logo-img"
+                    onerror="this.src='https://via.placeholder.com/80x30?text=KSGMS'">
+                <span class="logo-text">KSGMS</span>
+            </a>
+            <div class="nav-links">
+                <a href="dept-admin-dashboard.html" class="nav-link">Dashboard</a>
+                <a href="dept-admin-dashboard.html#assigned-complaints" class="nav-link active">Assigned Complaints</a>
+                <a href="dept-admin-dashboard.html#department-analytics" class="nav-link">Department Analytics</a>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+            <div class="user-profile-menu">
+                <img src="https://ui-avatars.com/api/?name=Admin&background=1E3A8A&color=fff" alt="User Avatar"
+                    class="avatar-sm">
+                <a href="login.html" class="nav-link text-danger"
+                    style="color: #ef4444 !important; font-weight: 600;">Logout <i class="fas fa-sign-out-alt"></i></a>
+            </div>
+            <div class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Layout -->
+    <main class="dashboard-container">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Manage Complaint</h1>
+            </div>
+            <a href="dept-assigned-complaints.html" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Back to Complaints List
+            </a>
+        </div>
+
+        <div class="details-grid">
+            <!-- Left Column: Complaint Details -->
+            <div class="details-card">
+                <div class="info-header">
+                    <div>
+                        <h2 class="complaint-primary-title">Power outage since yesterday</h2>
+                        <div class="meta-info">
+                            <span class="meta-item"><i class="fas fa-hashtag"></i> C-4092</span>
+                            <span class="meta-item"><i class="far fa-calendar-alt"></i> Oct 18, 2023, 08:15 AM</span>
+                        </div>
+                    </div>
+                    <span class="status-badge status-pending" id="currentStatusBadge">
+                        <span class="status-dot"></span> Pending
+                    </span>
+                </div>
+
+                <div class="info-section">
+                    <h3 class="section-label">Description</h3>
+                    <p class="description-text">
+                        The entire MG Road block has been facing a continuous power cut since yesterday evening. 
+                        No previous notice was provided. Please send a line worker to investigate as it's affecting local businesses.
+                    </p>
+                </div>
+
+                <div class="attributes-grid">
+                    <div class="attribute">
+                        <span class="attr-label">Citizen Reporter</span>
+                        <span class="attr-value"><i class="fas fa-user text-primary"></i> Rahul Menon</span>
+                    </div>
+                    <div class="attribute">
+                        <span class="attr-label">Citizen Contact</span>
+                        <span class="attr-value"><i class="fas fa-phone text-warning"></i> +91 9876543210</span>
+                    </div>
+                    <div class="attribute" style="grid-column: 1 / -1;">
+                        <span class="attr-label">Assigned Location</span>
+                        <span class="attr-value"><i class="fas fa-map-marker-alt text-danger" style="color: #EF4444;"></i> MG Road, Ernakulam</span>
+                    </div>
+                    <div class="attribute" style="grid-column: 1 / -1; margin-top: 0.5rem; padding-top: 1rem; border-top: 1px dashed var(--border);">
+                        <span class="attr-label">Routing Method</span>
+                        <span class="attr-value" style="color: #059669; font-weight: 600;"><i class="fas fa-magic"></i> Automatically routed by AI Classification</span>
+                    </div>
+                </div>
+
+                <div class="info-section" style="margin-top: 2rem;">
+                    <h3 class="section-label">Uploaded Attachments</h3>
+                    <div class="image-gallery">
+                        <div style="padding: 2rem; text-align: center; border: 1px dashed var(--border); border-radius: var(--radius-md); color: var(--text-light); width: 100%;">
+                            <i class="fas fa-image" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
+                            <p>No images uploaded by the citizen</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Update Action Logic -->
+            <div>
+                <div class="action-card">
+                    <h3 class="action-title"><i class="fas fa-edit" style="color: var(--primary);"></i> Update Status</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 0.5rem;">Change the lifecycle status of this grievance to notify the citizen. (AI has already assigned this to your department)</p>
+                    
+                    <div class="action-buttons">
+                        <button class="btn-action btn-in-progress" onclick="updateStatus('in_progress')">
+                            <i class="fas fa-sync-alt"></i> Mark as In Progress
+                        </button>
+                        <button class="btn-action btn-resolved" onclick="updateStatus('resolved')">
+                            <i class="fas fa-check-circle"></i> Mark as Resolved
+                        </button>
+                    </div>
+
+                    <div id="updateMessage" style="display: none; margin-top: 1rem; padding: 1rem; border-radius: var(--radius-md); background-color: rgba(16, 185, 129, 0.1); color: #059669; font-size: 0.9rem; font-weight: 500; text-align: center;">
+                        <i class="fas fa-check"></i> Status updated successfully!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Shared script for theme toggle -->
+    <script src="script.js"></script>
+    <script>
+        // Mock function to update the DOM status badge
+        function updateStatus(status) {
+            const badge = document.getElementById('currentStatusBadge');
+            const msg = document.getElementById('updateMessage');
+            
+            if (status === 'in_progress') {
+                badge.className = 'status-badge status-in-progress';
+                badge.innerHTML = '<span class="status-dot"></span> In Progress';
+            } else if (status === 'resolved') {
+                badge.className = 'status-badge status-resolved';
+                badge.innerHTML = '<span class="status-dot"></span> Resolved';
+            }
+
+            // Show success message temporarily
+            msg.style.display = 'block';
+            setTimeout(() => {
+                msg.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - KSGMS</title>
+    <meta name="description" content="Register for Kerala Smart Grievance Management System.">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="auth-page">
+    <!-- Navbar -->
+    <nav class="navbar auth-navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="logo.jpg" alt="KSGMS Logo" class="logo-icon logo-img"
+                    onerror="this.src='https://via.placeholder.com/80x30?text=KSGMS'">
+                <span class="logo-text">KSGMS</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+            <div class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Layout -->
+    <main class="auth-container">
+        <div class="auth-card auth-card-split">
+            <!-- Left Info Panel -->
+            <div class="auth-info-panel">
+                <div class="info-content">
+                    <h2 class="info-title">Welcome Back!</h2>
+                    <p class="info-desc">Already have an account? Login to access your dashboard and track your
+                        complaints.</p>
+                    <a href="login.html" class="btn btn-outline-light">Login</a>
+                </div>
+                <!-- Optional background blobs for left panel -->
+                <div class="blob blob-1"
+                    style="width: 200px; height: 200px; top: -50px; left: -50px; background: rgba(255,255,255,0.1); z-index: 1;">
+                </div>
+                <div class="blob blob-2"
+                    style="width: 250px; height: 250px; bottom: -50px; right: -50px; background: rgba(255,255,255,0.1); z-index: 1;">
+                </div>
+            </div>
+
+            <!-- Right Form Panel -->
+            <div class="auth-form-panel">
+                <h2 class="auth-title">Register for KSGMS</h2>
+
+                <form id="registerForm" class="auth-form">
+
+                    <!-- Role Selection -->
+                    <div class="form-group">
+                        <label class="form-label">Register As</label>
+                        <div class="role-selector">
+                            <label class="role-option">
+                                <input type="radio" name="role" value="user" checked>
+                                <span class="role-btn">Citizen</span>
+                            </label>
+                            <label class="role-option">
+                                <input type="radio" name="role" value="dept_admin">
+                                <span class="role-btn">Department</span>
+                            </label>
+                            <label class="role-option">
+                                <input type="radio" name="role" value="super_admin">
+                                <span class="role-btn">Super Admin</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Full Name -->
+                    <div class="form-group">
+                        <label for="fullname" class="form-label">Full Name</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user input-icon"></i>
+                            <input type="text" id="fullname" class="form-input" placeholder="Enter your full name"
+                                required>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope input-icon"></i>
+                            <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" id="password" class="form-input" placeholder="Create a password"
+                                required>
+                        </div>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="form-group">
+                        <label for="confirm_password" class="form-label">Confirm Password</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" id="confirm_password" class="form-input"
+                                placeholder="Confirm your password" required>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="auth-actions">
+                        <button type="submit" class="btn btn-login"><i class="fas fa-user-plus"></i> Register</button>
+                    </div>
+
+                    <div class="auth-separator">OR</div>
+
+                    <button type="button" class="btn btn-google">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg"
+                            alt="Google" class="google-icon">
+                        Sign up with Google
+                    </button>
+
+                    <div class="auth-actions" style="margin-top: 0.5rem;">
+                        <a href="index.html" class="btn btn-back">Back to Home</a>
+                    </div>
+                </form>
+
+                <div class="auth-footer">
+                    <p>Already have an account? <a href="login.html" class="auth-link">Login</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Decorative Blobs (Shared from main theme) -->
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>KSGMS</h3>
+                <p>Kerala Smart Grievance Management System</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="register.html">Register</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; Kerala Smart Grievance Management System</p>
+        </div>
+    </footer>
+
+    <!-- Shared script for theme toggle -->
+    <script src="script.js"></script>
+    <script>
+        // Form submission prevent default for demonstration
+        document.getElementById('registerForm')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('.btn-login');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
+            setTimeout(() => {
+                window.location.href = 'login.html'; // Mock redirect to login
+            }, 1000);
+        });
+    </script>
+</body>
+
+</html>

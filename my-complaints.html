@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Complaints - KSGMS</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-top: 0.25rem;
+        }
+
+        .table-container {
+            background-color: var(--surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .complaints-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .complaints-table th,
+        .complaints-table td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .complaints-table th {
+            background-color: rgba(30, 58, 138, 0.05); /* very light primary */
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .complaints-table tbody tr {
+            transition: var(--transition);
+        }
+
+        .complaints-table tbody tr:hover {
+            background-color: rgba(30, 58, 138, 0.02);
+        }
+
+        .complaints-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .complaint-id {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .complaint-title-cell {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: #D97706;
+        }
+
+        .status-in-progress {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #2563EB;
+        }
+
+        .status-resolved {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: #059669;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .status-pending .status-dot { background-color: #D97706; }
+        .status-in-progress .status-dot { background-color: #2563EB; }
+        .status-resolved .status-dot { background-color: #059669; }
+
+        .btn-view {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            background-color: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-weight: 500;
+        }
+
+        .btn-view:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        /* Dark Theme adjustments */
+        [data-theme="dark"] .table-container {
+            background-color: var(--surface);
+            border-color: var(--border);
+        }
+
+        [data-theme="dark"] .complaints-table th {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+        }
+
+        [data-theme="dark"] .complaints-table td {
+            border-bottom-color: var(--border);
+        }
+
+        [data-theme="dark"] .complaints-table tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        [data-theme="dark"] .complaint-title-cell {
+            color: var(--text-primary);
+        }
+        
+        [data-theme="dark"] .status-pending { color: #FBBF24; }
+        [data-theme="dark"] .status-pending .status-dot { background-color: #FBBF24; }
+        
+        [data-theme="dark"] .status-in-progress { color: #60A5FA; }
+        [data-theme="dark"] .status-in-progress .status-dot { background-color: #60A5FA; }
+        
+        [data-theme="dark"] .status-resolved { color: #34D399; }
+        [data-theme="dark"] .status-resolved .status-dot { background-color: #34D399; }
+    </style>
+</head>
+
+<body class="dashboard-page">
+    <!-- Navbar -->
+    <nav class="navbar dashboard-navbar">
+        <div class="nav-container nav-container-fluid">
+            <a href="index.html" class="nav-logo" style="text-decoration: none;">
+                <img src="logo.jpg" alt="KSGMS Logo" class="logo-icon logo-img"
+                    onerror="this.src='https://via.placeholder.com/80x30?text=KSGMS'">
+                <span class="logo-text">KSGMS</span>
+            </a>
+            <div class="nav-links">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="my-complaints.html" class="nav-link active">My Complaints</a>
+                <a href="submit-complaint.html" class="nav-link">Submit Complaint</a>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+            <div class="user-profile-menu">
+                <img src="https://ui-avatars.com/api/?name=User&background=1E3A8A&color=fff" alt="User Avatar"
+                    class="avatar-sm">
+                <a href="login.html" class="nav-link text-danger"
+                    style="color: #ef4444 !important; font-weight: 600;">Logout <i class="fas fa-sign-out-alt"></i></a>
+            </div>
+            <div class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Layout -->
+    <main class="dashboard-container">
+        
+        <div class="page-header">
+            <h1 class="page-title">My Complaints</h1>
+            <p class="page-subtitle">View and track the status of your submitted grievances.</p>
+        </div>
+
+        <div class="table-container">
+            <div class="table-wrapper">
+                <table class="complaints-table">
+                    <thead>
+                        <tr>
+                            <th>Complaint ID</th>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Date Submitted</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Complaint Row 1 -->
+                        <tr>
+                            <td class="complaint-id">#C-2045</td>
+                            <td class="complaint-title-cell">Broken Pipeline on Main Street</td>
+                            <td>Water Supply</td>
+                            <td>Oct 12, 2023</td>
+                            <td>
+                                <span class="status-badge status-pending">
+                                    <span class="status-dot"></span> Pending
+                                </span>
+                            </td>
+                            <td>
+                                <a href="complaint-details.html" class="btn-view">View Details</a>
+                            </td>
+                        </tr>
+
+                        <!-- Complaint Row 2 -->
+                        <tr>
+                            <td class="complaint-id">#C-2038</td>
+                            <td class="complaint-title-cell">Streetlights not working in Phase 2</td>
+                            <td>Electricity & Power</td>
+                            <td>Oct 05, 2023</td>
+                            <td>
+                                <span class="status-badge status-in-progress">
+                                    <span class="status-dot"></span> In Progress
+                                </span>
+                            </td>
+                            <td>
+                                <a href="complaint-details.html" class="btn-view">View Details</a>
+                            </td>
+                        </tr>
+
+                        <!-- Complaint Row 3 -->
+                        <tr>
+                            <td class="complaint-id">#C-2012</td>
+                            <td class="complaint-title-cell">Potholes near City Hospital</td>
+                            <td>Roads & Infrastructure</td>
+                            <td>Sep 28, 2023</td>
+                            <td>
+                                <span class="status-badge status-resolved">
+                                    <span class="status-dot"></span> Resolved
+                                </span>
+                            </td>
+                            <td>
+                                <a href="complaint-details.html" class="btn-view">View Details</a>
+                            </td>
+                        </tr>
+                        
+                        <!-- Complaint Row 4 -->
+                        <tr>
+                            <td class="complaint-id">#C-1985</td>
+                            <td class="complaint-title-cell">Irregular garbage collection</td>
+                            <td>Waste Management</td>
+                            <td>Sep 15, 2023</td>
+                            <td>
+                                <span class="status-badge status-resolved">
+                                    <span class="status-dot"></span> Resolved
+                                </span>
+                            </td>
+                            <td>
+                                <a href="complaint-details.html" class="btn-view">View Details</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+    </main>
+
+    <!-- Shared script for theme toggle -->
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department Admin Dashboard - KSGMS</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .page-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Stats Cards */
+        .admin-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .admin-stat-card {
+            background-color: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            transition: var(--transition);
+        }
+
+        .admin-stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .stat-icon.blue { background-color: rgba(59, 130, 246, 0.1); color: #3B82F6; }
+        .stat-icon.warning { background-color: rgba(245, 158, 11, 0.1); color: #F59E0B; }
+        .stat-icon.success { background-color: rgba(16, 185, 129, 0.1); color: #10B981; }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        /* Table */
+        .table-container {
+            background-color: var(--surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+        }
+
+        .admin-table th {
+            background-color: rgba(30, 58, 138, 0.05); /* very light primary */
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .admin-table tbody tr {
+            transition: var(--transition);
+        }
+
+        .admin-table tbody tr:hover {
+            background-color: rgba(30, 58, 138, 0.02);
+        }
+
+        .admin-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .complaint-id {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .complaint-title-cell {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        /* Status badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .status-pending { background-color: rgba(245, 158, 11, 0.1); color: #D97706; }
+        .status-in-progress { background-color: rgba(59, 130, 246, 0.1); color: #2563EB; }
+        .status-resolved { background-color: rgba(16, 185, 129, 0.1); color: #059669; }
+        
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; }
+        .status-pending .status-dot { background-color: #D97706; }
+        .status-in-progress .status-dot { background-color: #2563EB; }
+        .status-resolved .status-dot { background-color: #059669; }
+
+        .btn-view {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            background-color: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-weight: 500;
+        }
+
+        .btn-view:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        /* Analytics Section */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .analytics-card {
+            background-color: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+
+        .analytics-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .progress-item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .progress-track {
+            height: 8px;
+            background-color: var(--border);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: var(--radius-full);
+        }
+
+        .fill-blue { background-color: var(--primary-light); }
+        .fill-green { background-color: var(--secondary); }
+        .fill-warning { background-color: #F59E0B; }
+
+        /* Dark Theme adjustments */
+        [data-theme="dark"] .admin-stat-card,
+        [data-theme="dark"] .table-container,
+        [data-theme="dark"] .analytics-card {
+            background-color: var(--surface);
+            border-color: var(--border);
+        }
+
+        [data-theme="dark"] .admin-table th {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+        }
+
+        [data-theme="dark"] .admin-table td {
+            border-bottom-color: var(--border);
+        }
+
+        [data-theme="dark"] .admin-table tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        [data-theme="dark"] .complaint-title-cell {
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+
+<body class="dashboard-page">
+    <!-- Navbar -->
+    <nav class="navbar dashboard-navbar">
+        <div class="nav-container nav-container-fluid">
+            <a href="#" class="nav-logo" style="text-decoration: none;">
+                <img src="logo.jpg" alt="KSGMS Logo" class="logo-icon logo-img"
+                    onerror="this.src='https://via.placeholder.com/80x30?text=KSGMS'">
+                <span class="logo-text">KSGMS</span>
+            </a>
+            <div class="nav-links">
+                <a href="dept-admin-dashboard.html" class="nav-link active">Dashboard</a>
+                <a href="#assigned-complaints" class="nav-link">Assigned Complaints</a>
+                <a href="dept-analytics.html" class="nav-link">Department Analytics</a>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+            <div class="user-profile-menu">
+                <img src="https://ui-avatars.com/api/?name=Admin&background=1E3A8A&color=fff" alt="User Avatar"
+                    class="avatar-sm">
+                <a href="login.html" class="nav-link text-danger"
+                    style="color: #ef4444 !important; font-weight: 600;">Logout <i class="fas fa-sign-out-alt"></i></a>
+            </div>
+            <div class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Layout -->
+    <main class="dashboard-container">
+        <div class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">Department Admin Dashboard</h1>
+                <p class="dashboard-subtitle">Welcome back, Electricity Department Officer (KSEB).</p>
+                <div style="margin-top: 1rem; padding: 0.75rem 1rem; background-color: rgba(59, 130, 246, 0.1); border-left: 4px solid var(--primary); border-radius: 0 var(--radius-md) var(--radius-md) 0; display: inline-flex; align-items: center; gap: 0.75rem;">
+                    <i class="fas fa-robot" style="color: var(--primary); font-size: 1.25rem;"></i>
+                    <p style="color: var(--text-primary); font-size: 0.9rem; margin: 0;"><strong>AI Auto-Routing Active:</strong> Complaints are automatically categorized and assigned to your department by the KSGMS AI Engine. No manual assignment needed.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Overview: Statistics Cards -->
+        <section class="admin-stats-grid">
+            <div class="admin-stat-card">
+                <div class="stat-header">
+                    <h3 class="stat-title">Total Assigned</h3>
+                    <div class="stat-icon blue">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                </div>
+                <div class="stat-value">142</div>
+            </div>
+
+            <div class="admin-stat-card">
+                <div class="stat-header">
+                    <h3 class="stat-title">Pending Action</h3>
+                    <div class="stat-icon warning">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                </div>
+                <div class="stat-value">38</div>
+            </div>
+
+            <div class="admin-stat-card">
+                <div class="stat-header">
+                    <h3 class="stat-title">Resolved Complaints</h3>
+                    <div class="stat-icon success">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+                <div class="stat-value">104</div>
+            </div>
+        </section>
+
+        <!-- Assigned Complaints Section -->
+        <section class="page-section" id="assigned-complaints">
+            <div class="section-header">
+                <h2 class="section-title">Automatically Routed Complaints (Electricity)</h2>
+            </div>
+            <div class="table-container">
+                <div class="table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Complaint ID</th>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Request 1 -->
+                            <tr>
+                                <td class="complaint-id">#C-4092</td>
+                                <td class="complaint-title-cell">Power outage since yesterday</td>
+                                <td>Electricity & Power</td>
+                                <td>MG Road, Ernakulam</td>
+                                <td>
+                                    <span class="status-badge status-pending">
+                                        <span class="status-dot"></span> Pending
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="dept-complaint-action.html" class="btn-view">Manage</a>
+                                </td>
+                            </tr>
+                            
+                            <!-- Request 2 -->
+                            <tr>
+                                <td class="complaint-id">#C-4038</td>
+                                <td class="complaint-title-cell">Streetlights not working in Phase 2</td>
+                                <td>Electricity & Power</td>
+                                <td>Phase 2 Residential Area</td>
+                                <td>
+                                    <span class="status-badge status-in-progress">
+                                        <span class="status-dot"></span> In Progress
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="dept-complaint-action.html" class="btn-view">Manage</a>
+                                </td>
+                            </tr>
+
+                            <!-- Request 3 -->
+                            <tr>
+                                <td class="complaint-id">#C-4015</td>
+                                <td class="complaint-title-cell">High voltage fluctuation</td>
+                                <td>Electricity & Power</td>
+                                <td>North Paravur</td>
+                                <td>
+                                    <span class="status-badge status-resolved">
+                                        <span class="status-dot"></span> Resolved
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="dept-complaint-action.html" class="btn-view">Manage</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analytics Section -->
+        <section class="page-section" id="department-analytics">
+            <div class="section-header">
+                <h2 class="section-title">Department Analytics</h2>
+            </div>
+            
+            <div class="analytics-grid">
+                <!-- Resolution Rate Card -->
+                <div class="analytics-card">
+                    <h3 class="analytics-title">Resolution Performance</h3>
+                    <div class="progress-list">
+                        <div class="progress-item">
+                            <div class="progress-item-header">
+                                <span>Resolved Complaints (73%)</span>
+                                <span style="font-weight: 700; color: var(--text-primary);">104</span>
+                            </div>
+                            <div class="progress-track">
+                                <div class="progress-fill fill-green" style="width: 73%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="progress-item">
+                            <div class="progress-item-header">
+                                <span>Pending Complaints (27%)</span>
+                                <span style="font-weight: 700; color: var(--text-primary);">38</span>
+                            </div>
+                            <div class="progress-track">
+                                <div class="progress-fill fill-warning" style="width: 27%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="progress-item" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+                            <div class="progress-item-header">
+                                <span>Total Received</span>
+                                <span style="font-weight: 700; color: var(--text-primary);">142</span>
+                            </div>
+                            <div class="progress-track">
+                                <div class="progress-fill fill-blue" style="width: 100%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simple text analytics / Key Insights -->
+                <div class="analytics-card" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: linear-gradient(135deg, rgba(30, 58, 138, 0.05), rgba(20, 184, 166, 0.05));">
+                    <div style="font-size: 3rem; color: var(--secondary); margin-bottom: 0.5rem;"><i class="fas fa-chart-pie"></i></div>
+                    <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">Target Achieved</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.6; max-width: 80%;">
+                        The Electricity Department has successfully resolved over 70% of logged complaints within the 48-hour SLA period this month.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Shared script for theme toggle -->
+    <script src="script.js"></script>
+</body>
+
+</html>

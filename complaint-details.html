@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaint Details - KSGMS</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.25rem;
+            background-color: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .btn-back:hover {
+            background-color: var(--background);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .details-card {
+            background-color: var(--surface);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+
+        .info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .complaint-primary-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .meta-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.85rem;
+            border-radius: var(--radius-full);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-in-progress {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #2563EB;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #2563EB;
+        }
+
+        .info-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-light);
+            margin-bottom: 0.75rem;
+        }
+
+        .description-text {
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .complaint-img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+        }
+
+        /* Timeline Styles */
+        .timeline-card {
+            background-color: var(--surface);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+
+        .timeline-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 5px;
+            bottom: 5px;
+            width: 2px;
+            background-color: var(--border);
+            border-radius: var(--radius-full);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            left: -2rem;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: var(--background);
+            border: 2px solid var(--border);
+            z-index: 2;
+        }
+
+        .timeline-item.active .timeline-marker {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.2);
+        }
+
+        .timeline-item.completed .timeline-marker {
+            background-color: var(--secondary); /* Green assigned theme */
+            border-color: var(--secondary);
+        }
+
+        .timeline-content {
+            padding-top: -2px;
+        }
+
+        .timeline-status {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .timeline-date {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Detail attributes grid */
+        .attributes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            background-color: var(--background);
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            margin-top: 1.5rem;
+        }
+
+        .attribute {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .attr-label {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        .attr-value {
+            font-weight: 500;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Dark Theme adjustments */
+        [data-theme="dark"] .details-card,
+        [data-theme="dark"] .timeline-card {
+            background-color: var(--surface);
+            border-color: var(--border);
+        }
+
+        [data-theme="dark"] .attributes-grid {
+            background-color: #0F172A;
+            border: 1px solid var(--border);
+        }
+
+        [data-theme="dark"] .timeline-marker {
+            background-color: #0F172A;
+            border-color: var(--border);
+        }
+
+        [data-theme="dark"] .status-in-progress { color: #60A5FA; }
+        [data-theme="dark"] .status-in-progress .status-dot { background-color: #60A5FA; }
+
+        @media (max-width: 900px) {
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .attributes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body class="dashboard-page">
+    <!-- Navbar -->
+    <nav class="navbar dashboard-navbar">
+        <div class="nav-container nav-container-fluid">
+            <a href="index.html" class="nav-logo" style="text-decoration: none;">
+                <img src="logo.jpg" alt="KSGMS Logo" class="logo-icon logo-img"
+                    onerror="this.src='https://via.placeholder.com/80x30?text=KSGMS'">
+                <span class="logo-text">KSGMS</span>
+            </a>
+            <div class="nav-links">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="my-complaints.html" class="nav-link">My Complaints</a>
+                <a href="submit-complaint.html" class="nav-link">Submit Complaint</a>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+            <div class="user-profile-menu">
+                <img src="https://ui-avatars.com/api/?name=User&background=1E3A8A&color=fff" alt="User Avatar"
+                    class="avatar-sm">
+                <a href="login.html" class="nav-link text-danger"
+                    style="color: #ef4444 !important; font-weight: 600;">Logout <i class="fas fa-sign-out-alt"></i></a>
+            </div>
+            <div class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Layout -->
+    <main class="dashboard-container">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Complaint Details</h1>
+            </div>
+            <a href="my-complaints.html" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Back to My Complaints
+            </a>
+        </div>
+
+        <div class="details-grid">
+            <!-- Left Column: Details -->
+            <div class="details-card">
+                <div class="info-header">
+                    <div>
+                        <h2 class="complaint-primary-title">Streetlights not working in Phase 2</h2>
+                        <div class="meta-info">
+                            <span class="meta-item"><i class="fas fa-hashtag"></i> C-2038</span>
+                            <span class="meta-item"><i class="far fa-calendar-alt"></i> Oct 05, 2023, 10:30 AM</span>
+                        </div>
+                    </div>
+                    <span class="status-badge status-in-progress">
+                        <span class="status-dot"></span> In Progress
+                    </span>
+                </div>
+
+                <div class="info-section">
+                    <h3 class="section-label">Description</h3>
+                    <p class="description-text">
+                        The streetlights along Phase 2 of the residential area have not been working for the past 4 days. 
+                        It is completely dark at night, causing safety concerns for pedestrians and vehicles passing through 
+                        this route. Please resolve this at the earliest.
+                    </p>
+                </div>
+
+                <div class="attributes-grid">
+                    <div class="attribute">
+                        <span class="attr-label">Category</span>
+                        <span class="attr-value"><i class="fas fa-bolt text-warning"></i> Electricity & Power</span>
+                    </div>
+                    <div class="attribute">
+                        <span class="attr-label">Department Assigned</span>
+                        <span class="attr-value"><i class="fas fa-building text-primary"></i> Municipal Corporation (Electrical Wing)</span>
+                    </div>
+                    <div class="attribute" style="grid-column: 1 / -1;">
+                        <span class="attr-label">Location</span>
+                        <span class="attr-value"><i class="fas fa-map-marker-alt text-danger" style="color: #EF4444;"></i> Phase 2 Residential Area, City Center</span>
+                    </div>
+                </div>
+
+                <div class="info-section" style="margin-top: 2rem;">
+                    <h3 class="section-label">Uploaded Attachments</h3>
+                    <div class="image-gallery">
+                        <img src="https://images.unsplash.com/photo-1543362145-ee001d9f8d16?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Dark Street" class="complaint-img">
+                        <img src="https://images.unsplash.com/photo-1517594422361-5e18d41d13db?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Broken Light" class="complaint-img">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Timeline -->
+            <div>
+                <div class="timeline-card">
+                    <h3 class="timeline-title">Status Timeline</h3>
+                    
+                    <div class="timeline">
+                        <div class="timeline-item completed">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-status">Submitted</div>
+                                <div class="timeline-date">Oct 05, 2023 at 10:30 AM</div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item completed">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-status">Assigned</div>
+                                <div class="timeline-date">Oct 06, 2023 at 09:15 AM</div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item active">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-status" style="color: var(--primary);">In Progress</div>
+                                <div class="timeline-date">Oct 06, 2023 at 02:45 PM</div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-status" style="color: var(--text-light);">Resolved</div>
+                                <div class="timeline-date" style="color: var(--text-light);">Pending</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Shared script for theme toggle -->
+    <script src="script.js"></script>
+</body>
+
+</html>

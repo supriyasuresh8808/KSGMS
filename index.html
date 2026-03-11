@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KSGMS - Kerala Smart Grievance Management System</title>
+    <meta name="description"
+        content="An AI-powered platform for reporting public issues and tracking complaint resolution.">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo" style="text-decoration: none;">
+                <img src="logo.jpg" alt="KSGMS Logo" class="logo-icon logo-img"
+                    onerror="this.src='https://via.placeholder.com/80x30?text=KSGMS'">
+                <span class="logo-text">KSGMS</span>
+            </a>
+            <div class="nav-links">
+                <a href="/" class="nav-link active">Home</a>
+                <a href="login.html" class="nav-link">Login</a>
+                <div class="lang-dropdown">
+                    <select class="lang-select">
+                        <option value="en">English</option>
+                        <option value="ml">Malayalam</option>
+                    </select>
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <a href="register.html" class="nav-link btn-register">Register</a>
+            </div>
+            <div class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Layout -->
+    <main class="landing-container">
+
+        <!-- Left Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <div class="badge">Government Tech SaaS</div>
+                <h1 class="hero-title">Kerala Smart Grievance <span class="highlight">Management System</span> (KSGMS)
+                </h1>
+                <p class="hero-description">
+                    An AI-powered platform that allows citizens to report public issues, automatically routes complaints
+                    to the correct government department, and enables transparent tracking of complaint resolution.
+                </p>
+
+                <div class="hero-actions">
+                    <button class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit Complaint</button>
+                    <a href="login.html" class="btn btn-secondary" style="text-decoration: none;">Login</a>
+                    <a href="register.html" class="btn btn-outline" style="text-decoration: none;">Register</a>
+                </div>
+
+                <div class="features-list">
+                    <div class="feature-item">
+                        <div class="feature-icon"><i class="fas fa-brain"></i></div>
+                        <span>AI Complaint Classification</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon"><i class="fas fa-route"></i></div>
+                        <span>Automatic Department Routing</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                        <span>Real-Time Complaint Tracking</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Section: AI Assistant Chat UI -->
+        <section class="assistant-section">
+            <div class="chat-card">
+                <div class="chat-header">
+                    <div class="chat-header-info">
+                        <div class="ai-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div>
+                            <h3>AI Assistant</h3>
+                            <span class="status"><span class="status-dot"></span> Online</span>
+                        </div>
+                    </div>
+                    <button class="chat-menu-btn"><i class="fas fa-ellipsis-v"></i></button>
+                </div>
+
+                <div class="chat-body" id="chatBody">
+                    <div class="message ai-message">
+                        <div class="message-content">
+                            Hello! I am the KSGMS AI Assistant. Tell me your issue and I will help you register a
+                            complaint.
+                        </div>
+                        <div class="message-time">Just now</div>
+                    </div>
+                </div>
+
+                <div class="chat-footer">
+                    <div class="input-actions">
+                        <button class="action-btn" title="Upload Photo" id="uploadBtn">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                        <button class="action-btn" title="Share Location" id="locationBtn">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </button>
+                    </div>
+                    <div class="input-wrapper">
+                        <input type="text" id="chatInput" placeholder="Describe your issue here..." autocomplete="off">
+                        <button class="send-btn" id="sendBtn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Decorative Elements -->
+            <div class="blob blob-1"></div>
+            <div class="blob blob-2"></div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>KSGMS</h3>
+                <p>Kerala Smart Grievance Management System</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="register.html">Register</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; Kerala Smart Grievance Management System</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

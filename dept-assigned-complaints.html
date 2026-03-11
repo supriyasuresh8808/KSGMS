@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department Assigned Complaints - KSGMS Admin</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .page-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* Filter Controls container (Optional enhancement) */
+        .filter-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .filter-select {
+            padding: 0.6rem 2rem 0.6rem 1rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            background-color: var(--surface);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9rem;
+            outline: none;
+            cursor: pointer;
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="none" class="w-4 h-4" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>');
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            background-size: 1rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Table container */
+        .table-container {
+            background-color: var(--surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-bottom: 3rem;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+        }
+
+        .admin-table th {
+            background-color: rgba(30, 58, 138, 0.05);
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .admin-table tbody tr {
+            transition: var(--transition);
+        }
+
+        .admin-table tbody tr:hover {
+            background-color: rgba(30, 58, 138, 0.02);
+        }
+
+        .admin-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .complaint-id {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .complaint-title-cell {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .date-cell {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .location-cell {
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        /* Status badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.85rem;
+            border-radius: var(--radius-full);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-pending { background-color: rgba(245, 158, 11, 0.1); color: #D97706; }
+        .status-in-progress { background-color: rgba(59, 130, 246, 0.1); color: #2563EB; }
+        .status-resolved { background-color: rgba(16, 185, 129, 0.1); color: #059669; }
+
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; }
+        .status-pending .status-dot { background-color: #D97706; }
+        .status-in-progress .status-dot { background-color: #2563EB; }
+        .status-resolved .status-dot { background-color: #059669; }
+
+        .btn-view {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            background-color: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .btn-view:hover {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Pagination */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 1.5rem;
+            background-color: var(--surface);
+            border-top: 1px solid var(--border);
+        }
+
+        .pagination-info {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .page-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            background-color: var(--surface);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background-color: rgba(30, 58, 138, 0.05);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .page-btn.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: var(--background);
+        }
+
+        /* Dark Theme adjustments */
+        [data-theme="dark"] .table-container,
+        [data-theme="dark"] .pagination-container,
+        [data-theme="dark"] .filter-select {
+            background-color: var(--surface);
+            border-color: var(--border);
+        }
+
+        [data-theme="dark"] .admin-table th {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+        }
+
+        [data-theme="dark"] .admin-table td {
+            border-bottom-color: var(--border);
+        }
+
+        [data-theme="dark"] .admin-table tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        [data-theme="dark"] .complaint-title-cell {
+            color: var(--text-primary);
+        }
+
+        [data-theme="dark"] .page-btn {
+            background-color: var(--surface);
+            border-color: var(--border);
+        }
+        
+        [data-theme="dark"] .filter-select {
+            background-image: url('data:image/svg+xml;utf8,<svg fill="none" class="w-4 h-4" stroke="%23CBD5E1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>');
+        }
+    </style>
+</head>
+
+<body class="dashboard-page">
+    <!-- Navbar (Admin Menu) -->
+    <nav class="navbar dashboard-navbar">
+        <div class="nav-container nav-container-fluid">
+            <a href="#" class="nav-logo" style="text-decoration: none;">
+                <img src="logo.jpg" alt="KSGMS Logo" class="logo-icon logo-img"
+                    onerror="this.src='https://via.placeholder.com/80x30?text=KSGMS'">
+                <span class="logo-text">KSGMS</span>
+            </a>
+            <div class="nav-links">
+                <a href="dept-admin-dashboard.html" class="nav-link">Dashboard</a>
+                <a href="dept-assigned-complaints.html" class="nav-link active">Assigned Complaints</a>
+                <a href="dept-analytics.html" class="nav-link">Department Analytics</a>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+            <div class="user-profile-menu">
+                <img src="https://ui-avatars.com/api/?name=Admin&background=1E3A8A&color=fff" alt="User Avatar"
+                    class="avatar-sm">
+                <a href="login.html" class="nav-link text-danger"
+                    style="color: #ef4444 !important; font-weight: 600;">Logout <i class="fas fa-sign-out-alt"></i></a>
+            </div>
+            <div class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Layout -->
+    <main class="dashboard-container">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Assigned Complaints</h1>
+                <p class="page-subtitle">Viewing all complaints automatically routed to the Electricity Department (KSEB) by the AI Engine.</p>
+                <div style="margin-top: 0.75rem; display: inline-flex; align-items: center; gap: 0.5rem; background-color: rgba(16, 185, 129, 0.1); color: #059669; padding: 0.4rem 0.75rem; border-radius: var(--radius-md); font-size: 0.85rem; font-weight: 600; border: 1px solid rgba(16, 185, 129, 0.2);">
+                    <i class="fas fa-magic"></i> AI Classification Active
+                </div>
+            </div>
+            <div class="filter-controls">
+                <select class="filter-select">
+                    <option value="all">All Statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="inprogress">In Progress</option>
+                    <option value="resolved">Resolved</option>
+                </select>
+                <select class="filter-select">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="table-wrapper">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Complaint ID</th>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Location</th>
+                            <th>Date Submitted</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Record 1 -->
+                        <tr>
+                            <td class="complaint-id">#C-4092</td>
+                            <td class="complaint-title-cell">Power outage since yesterday</td>
+                            <td>Electricity & Power</td>
+                            <td class="location-cell"><i class="fas fa-map-marker-alt" style="color:#ef4444; font-size: 0.8rem;"></i> MG Road, Ernakulam</td>
+                            <td class="date-cell">Oct 18, 2023</td>
+                            <td>
+                                <span class="status-badge status-pending">
+                                    <span class="status-dot"></span> Pending
+                                </span>
+                            </td>
+                            <td>
+                                <a href="dept-complaint-action.html" class="btn-view">View Details</a>
+                            </td>
+                        </tr>
+
+                        <!-- Record 2 -->
+                        <tr>
+                            <td class="complaint-id">#C-4038</td>
+                            <td class="complaint-title-cell">Streetlights not working in Phase 2</td>
+                            <td>Electricity & Power</td>
+                            <td class="location-cell"><i class="fas fa-map-marker-alt" style="color:#ef4444; font-size: 0.8rem;"></i> Phase 2 Residential Area</td>
+                            <td class="date-cell">Oct 16, 2023</td>
+                            <td>
+                                <span class="status-badge status-in-progress">
+                                    <span class="status-dot"></span> In Progress
+                                </span>
+                            </td>
+                            <td>
+                                <a href="dept-complaint-action.html" class="btn-view">View Details</a>
+                            </td>
+                        </tr>
+
+                        <!-- Record 3 -->
+                        <tr>
+                            <td class="complaint-id">#C-4015</td>
+                            <td class="complaint-title-cell">High voltage fluctuation</td>
+                            <td>Electricity & Power</td>
+                            <td class="location-cell"><i class="fas fa-map-marker-alt" style="color:#ef4444; font-size: 0.8rem;"></i> North Paravur</td>
+                            <td class="date-cell">Oct 15, 2023</td>
+                            <td>
+                                <span class="status-badge status-resolved">
+                                    <span class="status-dot"></span> Resolved
+                                </span>
+                            </td>
+                            <td>
+                                <a href="dept-complaint-action.html" class="btn-view">View Details</a>
+                            </td>
+                        </tr>
+
+                        <!-- Record 4 -->
+                        <tr>
+                            <td class="complaint-id">#C-3982</td>
+                            <td class="complaint-title-cell">Sparking transformer in Sector 4</td>
+                            <td>Electricity & Power</td>
+                            <td class="location-cell"><i class="fas fa-map-marker-alt" style="color:#ef4444; font-size: 0.8rem;"></i> Sector 4, Kakkanad</td>
+                            <td class="date-cell">Oct 14, 2023</td>
+                            <td>
+                                <span class="status-badge status-pending">
+                                    <span class="status-dot"></span> Pending
+                                </span>
+                            </td>
+                            <td>
+                                <a href="dept-complaint-action.html" class="btn-view">View Details</a>
+                            </td>
+                        </tr>
+
+                        <!-- Record 5 -->
+                        <tr>
+                            <td class="complaint-id">#C-3950</td>
+                            <td class="complaint-title-cell">Fallen electrical wire across street</td>
+                            <td>Electricity & Power</td>
+                            <td class="location-cell"><i class="fas fa-map-marker-alt" style="color:#ef4444; font-size: 0.8rem;"></i> Pipeline Road</td>
+                            <td class="date-cell">Oct 12, 2023</td>
+                            <td>
+                                <span class="status-badge status-resolved">
+                                    <span class="status-dot"></span> Resolved
+                                </span>
+                            </td>
+                            <td>
+                                <a href="dept-complaint-action.html" class="btn-view">View Details</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Table Pagination -->
+            <div class="pagination-container">
+                <div class="pagination-info">
+                    Showing <strong>1</strong> to <strong>5</strong> of <strong>142</strong> entries
+                </div>
+                <div class="pagination-controls">
+                    <button class="page-btn" disabled><i class="fas fa-chevron-left"></i></button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <button class="page-btn">...</button>
+                    <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Shared script for theme toggle -->
+    <script src="script.js"></script>
+</body>
+
+</html>

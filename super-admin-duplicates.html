@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duplicate Complaints - KSGMS Super Admin</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        .page-header {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .page-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* Banner styling specific to AI Detection */
+        .ai-banner {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: linear-gradient(135deg, rgba(239, 108, 0, 0.1), rgba(245, 158, 11, 0.05));
+            border-left: 4px solid #F97316; /* Orange Primary */
+            padding: 1rem 1.5rem;
+            border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .ai-banner-icon {
+            font-size: 1.5rem;
+            color: #F97316;
+            margin-top: 2px;
+        }
+
+        .ai-banner-content h4 {
+            margin: 0 0 0.25rem 0;
+            color: var(--text-primary);
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .ai-banner-content p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Table Design */
+        .table-container {
+            background-color: var(--surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-bottom: 3rem;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+            vertical-align: middle;
+        }
+
+        .admin-table th {
+            background-color: rgba(249, 115, 22, 0.05); /* very light orange */
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .admin-table tbody tr {
+            transition: var(--transition);
+        }
+
+        .admin-table tbody tr:hover {
+            background-color: rgba(249, 115, 22, 0.02);
+        }
+
+        .admin-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .group-id {
+            font-weight: 700;
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        
+        .id-badge-primary {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            background-color: var(--primary-light);
+            color: white;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 4px rgba(37,99,235,0.2);
+        }
+
+        .id-badge-secondary {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            background-color: var(--background);
+            color: var(--text-secondary);
+            border: 1px dashed var(--border);
+            border-radius: var(--radius-sm);
+            font-weight: 500;
+            font-size: 0.85rem;
+            margin-right: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .category-text {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .location-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .date-text {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        /* Action Buttons */
+        .btn-merge {
+            background-color: #F97316; /* Orange */
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+            box-shadow: 0 2px 5px rgba(249, 115, 22, 0.3);
+            white-space: nowrap;
+        }
+
+        .btn-merge:hover {
+            background-color: #EA580C;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(249, 115, 22, 0.4);
+        }
+
+        /* Merge Modal Styling */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-card {
+            background-color: var(--surface);
+            border-radius: var(--radius-xl);
+            width: 100%;
+            max-width: 600px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 1.5rem 1.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to right, rgba(249, 115, 22, 0.05), transparent);
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-close {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-close:hover {
+            color: #EF4444;
+        }
+
+        .modal-body {
+            padding: 1.75rem;
+        }
+        
+        .merge-warning {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: #D97706;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            border-left: 3px solid #F59E0B;
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .radio-group {
+            border: 2px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+        
+        .radio-group:hover {
+            border-color: rgba(249, 115, 22, 0.4);
+            background-color: rgba(249, 115, 22, 0.02);
+        }
+        
+        .radio-group.selected {
+            border-color: #F97316;
+            background-color: rgba(249, 115, 22, 0.05);
+        }
+
+        .radio-group input[type="radio"] {
+            margin-top: 0.3rem;
+            accent-color: #F97316;
+            width: 1.1rem;
+            height: 1.1rem;
+        }
+
+        .radio-content h5 {
+            margin: 0 0 0.25rem 0;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .radio-content p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .modal-footer {
+            padding: 1.25rem 1.75rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            border-top: 1px solid var(--border);
+            background-color: rgba(0,0,0,0.02);
+        }
+
+        .btn-cancel {
+            background-color: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            padding: 0.6rem 1.25rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-cancel:hover {
+            background-color: var(--background);
+            color: var(--text-primary);
+        }
+
+        .btn-confirm {
+            background-color: #F97316;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.25rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-confirm:hover {
+            background-color: #EA580C;
+        }
+
+        /* Dark Theme adjustments */
+        [data-theme="dark"] .table-container,
+        [data-theme="dark"] .modal-card {
+            background-color: var(--surface);
+            border-color: var(--border);
+        }
+
+        [data-theme="dark"] .admin-table th {
+            background-color: rgba(249, 115, 22, 0.05); /* very light orange tint */
+            color: var(--text-secondary);
+        }
+
+        [data-theme="dark"] .admin-table td { border-bottom-color: var(--border); }
+        [data-theme="dark"] .admin-table tbody tr:hover { background-color: rgba(249, 115, 22, 0.05); }
+
+        [data-theme="dark"] .group-id,
+        [data-theme="dark"] .category-text,
+        [data-theme="dark"] .ai-banner-content h4 {
+            color: var(--text-primary);
+        }
+
+        [data-theme="dark"] .modal-footer {
+            background-color: rgba(255,255,255,0.02);
+        }
+        
+        [data-theme="dark"] .radio-group { background-color: transparent; }
+        [data-theme="dark"] .radio-group:hover, [data-theme="dark"] .radio-group.selected { background-color: rgba(249, 115, 22, 0.1); }
+    </style>
+</head>
+
+<body class="dashboard-page">
+    <!-- Navbar (Super Admin Menu) -->
+    <nav class="navbar dashboard-navbar">
+        <div class="nav-container nav-container-fluid">
+            <a href="#" class="nav-logo" style="text-decoration: none;">
+                <img src="logo.jpg" alt="KSGMS Logo" class="logo-icon logo-img"
+                    onerror="this.src='https://via.placeholder.com/80x30?text=KSGMS'">
+                <span class="logo-text">KSGMS</span>
+            </a>
+            <div class="nav-links">
+                <a href="super-admin-dashboard.html" class="nav-link">Dashboard</a>
+                <a href="super-admin-departments.html" class="nav-link">Department Management</a>
+                <a href="super-admin-management.html" class="nav-link">Admin Management</a>
+                <a href="super-admin-analytics.html" class="nav-link">System Analytics</a>
+                <a href="super-admin-duplicates.html" class="nav-link active">Duplicate Complaints</a>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+            <div class="user-profile-menu">
+                <img src="https://ui-avatars.com/api/?name=Super+Admin&background=10B981&color=fff" alt="User Avatar"
+                    class="avatar-sm">
+                <a href="login.html" class="nav-link text-danger"
+                    style="color: #ef4444 !important; font-weight: 600;">Logout <i class="fas fa-sign-out-alt"></i></a>
+            </div>
+            <div class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Layout -->
+    <main class="dashboard-container">
+        
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Duplicate Complaints Triage</h1>
+                <p class="page-subtitle">Review algorithm-flagged duplicates and consolidate primary records.</p>
+            </div>
+        </div>
+
+        <div class="ai-banner">
+            <div class="ai-banner-icon"><i class="fas fa-robot"></i></div>
+            <div class="ai-banner-content">
+                <h4>AI Similarity Engine Active</h4>
+                <p>The neural network has automatically clustered the following complaints based on geospatial proximity, textual similarity, and temporal reporting. Merging them will maintain the oldest request as the Primary Parent.</p>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="table-wrapper">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Cluster Group</th>
+                            <th>Primary Complaint ID</th>
+                            <th>Flagged Duplicates</th>
+                            <th>Category</th>
+                            <th>Location</th>
+                            <th>Spam/Duplicate Rate</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="duplicatesTable">
+                        <!-- Cluster 1 -->
+                        <tr>
+                            <td><span class="group-id"><i class="fas fa-project-diagram" style="color:#F97316; font-size: 0.8rem;"></i> GRP-X8A</span></td>
+                            <td><span class="id-badge-primary">#C-4092</span></td>
+                            <td>
+                                <span class="id-badge-secondary">#C-4095</span>
+                                <span class="id-badge-secondary">#C-4098</span>
+                                <span class="id-badge-secondary">#C-4103</span>
+                            </td>
+                            <td class="category-text">Electricity & Power</td>
+                            <td class="location-text"><i class="fas fa-map-marker-alt text-danger"></i> MG Road, Ernakulam</td>
+                            <td><strong style="color: #EF4444;">89% Match</strong></td>
+                            <td>
+                                <button class="btn-merge" onclick="openMergeModal('GRP-X8A', 'C-4092', ['C-4095', 'C-4098', 'C-4103'])">
+                                    <i class="fas fa-object-group"></i> Resolve Cluster
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- Cluster 2 -->
+                        <tr>
+                            <td><span class="group-id"><i class="fas fa-project-diagram" style="color:#F97316; font-size: 0.8rem;"></i> GRP-Y2B</span></td>
+                            <td><span class="id-badge-primary">#C-3850</span></td>
+                            <td>
+                                <span class="id-badge-secondary">#C-3851</span>
+                            </td>
+                            <td class="category-text">Water & Sewage</td>
+                            <td class="location-text"><i class="fas fa-map-marker-alt text-danger"></i> Pipeline Junction</td>
+                            <td><strong style="color: #F59E0B;">94% Match</strong></td>
+                            <td>
+                                <button class="btn-merge" onclick="openMergeModal('GRP-Y2B', 'C-3850', ['C-3851'])">
+                                    <i class="fas fa-object-group"></i> Resolve Cluster
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- Cluster 3 -->
+                        <tr>
+                            <td><span class="group-id"><i class="fas fa-project-diagram" style="color:#F97316; font-size: 0.8rem;"></i> GRP-Z9C</span></td>
+                            <td><span class="id-badge-primary">#C-3112</span></td>
+                            <td>
+                                <span class="id-badge-secondary">#C-3114</span>
+                                <span class="id-badge-secondary">#C-3150</span>
+                            </td>
+                            <td class="category-text">Roads & Infra</td>
+                            <td class="location-text"><i class="fas fa-map-marker-alt text-danger"></i> NH Bypass, Vyttila</td>
+                            <td><strong style="color: #EF4444;">91% Match</strong></td>
+                            <td>
+                                <button class="btn-merge" onclick="openMergeModal('GRP-Z9C', 'C-3112', ['C-3114', 'C-3150'])">
+                                    <i class="fas fa-object-group"></i> Resolve Cluster
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Merge Resolution Modal -->
+    <div class="modal-overlay" id="mergeModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-layer-group" style="color: #F97316;"></i> Resolve Duplicate Cluster <span id="modalGroupId" style="font-weight: 500; opacity: 0.8;"></span></h2>
+                <button class="btn-close" onclick="closeMergeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="merge-warning">
+                    <i class="fas fa-exclamation-triangle" style="margin-top: 2px;"></i>
+                    <div>By merging records, citizens who submitted the secondary duplications will receive timeline updates linked to the primary parent issue. Their original text and attachments are retained in history logs.</div>
+                </div>
+
+                <div class="radio-group selected" onclick="selectRadio(this, 'merge')">
+                    <input type="radio" name="mergeAction" id="actionMerge" value="merge" checked>
+                    <div class="radio-content">
+                        <h5>Merge into Primary Record (<span id="modalPrimaryId"></span>)</h5>
+                        <p>Fold <span id="modalDuplicateCount"></span> duplicate flags natively into the primary complaint. This stops multiple agents from deploying towards the same issue.</p>
+                    </div>
+                </div>
+
+                <div class="radio-group" onclick="selectRadio(this, 'reject')">
+                    <input type="radio" name="mergeAction" id="actionReject" value="reject">
+                    <div class="radio-content">
+                        <h5>Reject AI Flag (Keep Separated)</h5>
+                        <p>Mark these reports as fundamentally distinct issues. They will remain fully active and separate in the assignment logs.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" onclick="closeMergeModal()">Cancel</button>
+                <button type="button" class="btn-confirm" onclick="executeAction()"><i class="fas fa-check"></i> Execute Action</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shared script for theme toggle -->
+    <script src="script.js"></script>
+
+    <!-- Page Specific Logic -->
+    <script>
+        const modal = document.getElementById('mergeModal');
+        let activeRow = null;
+
+        function openMergeModal(groupId, primaryId, dupesArray) {
+            document.getElementById('modalGroupId').textContent = `[${groupId}]`;
+            document.getElementById('modalPrimaryId').textContent = `#${primaryId}`;
+            document.getElementById('modalDuplicateCount').textContent = dupesArray.length;
+            
+            // store reference to the row so we can remove it upon execution
+            activeRow = event.target.closest('tr');
+            
+            modal.classList.add('active');
+        }
+
+        function closeMergeModal() {
+            modal.classList.remove('active');
+            activeRow = null;
+        }
+
+        function selectRadio(element, radioValue) {
+            // Remove 'selected' styling from all groups
+            document.querySelectorAll('.radio-group').forEach(el => el.classList.remove('selected'));
+            // Add 'selected' styling to clicked group
+            element.classList.add('selected');
+            // Check the internal radio input
+            element.querySelector('input[type="radio"]').checked = true;
+        }
+
+        function executeAction() {
+            const action = document.querySelector('input[name="mergeAction"]:checked').value;
+            
+            // Show alert representing backend transaction
+            if (action === 'merge') {
+                alert("Success: Complaint flags successfully merged into the Primary Record history. Department dashboards have been updated to reflect the deduplication.");
+            } else {
+                alert("Action Overridden: The AI flags have been removed from this cluster. Records will continue to track independently.");
+            }
+            
+            // Remove the resolved cluster from the triage inbox
+            if (activeRow) {
+                activeRow.remove();
+            }
+            
+            closeMergeModal();
+            
+            // Check if table is empty
+            const tableBody = document.getElementById('duplicatesTable');
+            if (tableBody.children.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 3rem; color: var(--text-light);"><i class="fas fa-check-circle" style="font-size: 2rem; color: #10B981; margin-bottom: 1rem; display: block;"></i>All AI-flagged duplicate clusters have been cleared. Excellent triage!</td></tr>`;
+            }
+        }
+    </script>
+</body>
+
+</html>

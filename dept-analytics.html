@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department Analytics - KSGMS Admin</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for beautiful modern graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .page-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* Stats Grid */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background-color: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-icon-wrapper {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-icon {
+            font-size: 1.5rem;
+        }
+
+        .stat-info {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1.2;
+            color: var(--text-primary);
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .bg-primary-light { background-color: rgba(59, 130, 246, 0.1); }
+        .text-primary { color: #3B82F6; }
+
+        .bg-warning-light { background-color: rgba(245, 158, 11, 0.1); }
+        .text-warning { color: #F59E0B; }
+
+        .bg-success-light { background-color: rgba(16, 185, 129, 0.1); }
+        .text-success { color: #10B981; }
+
+        /* Charts Section */
+        .charts-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-card {
+            background-color: var(--surface);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-header {
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .chart-wrapper {
+            position: relative;
+            flex: 1;
+            min-height: 300px;
+            width: 100%;
+        }
+
+        .full-width-chart {
+            grid-column: 1 / -1;
+            margin-top: 1.5rem;
+        }
+
+        /* Dark Theme adjustments */
+        [data-theme="dark"] .stat-card,
+        [data-theme="dark"] .chart-card {
+            background-color: var(--surface);
+            border-color: var(--border);
+        }
+
+        @media (max-width: 992px) {
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body class="dashboard-page">
+    <!-- Navbar (Admin Menu) -->
+    <nav class="navbar dashboard-navbar">
+        <div class="nav-container nav-container-fluid">
+            <a href="#" class="nav-logo" style="text-decoration: none;">
+                <img src="logo.jpg" alt="KSGMS Logo" class="logo-icon logo-img"
+                    onerror="this.src='https://via.placeholder.com/80x30?text=KSGMS'">
+                <span class="logo-text">KSGMS</span>
+            </a>
+            <div class="nav-links">
+                <a href="dept-admin-dashboard.html" class="nav-link">Dashboard</a>
+                <a href="dept-assigned-complaints.html" class="nav-link">Assigned Complaints</a>
+                <a href="dept-analytics.html" class="nav-link active">Department Analytics</a>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+            <div class="user-profile-menu">
+                <img src="https://ui-avatars.com/api/?name=Admin&background=1E3A8A&color=fff" alt="User Avatar"
+                    class="avatar-sm">
+                <a href="login.html" class="nav-link text-danger"
+                    style="color: #ef4444 !important; font-weight: 600;">Logout <i class="fas fa-sign-out-alt"></i></a>
+            </div>
+            <div class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Layout -->
+    <main class="dashboard-container">
+        
+        <div class="page-header">
+            <h1 class="page-title">Department Analytics</h1>
+            <p class="page-subtitle">Track key metrics and issue trends for the Electricity Department.</p>
+        </div>
+
+        <!-- 1. Stats Overview -->
+        <section class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-icon-wrapper bg-primary-light">
+                    <i class="fas fa-inbox stat-icon text-primary"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 class="stat-value">428</h3>
+                    <p class="stat-label">Total Complaints Received</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon-wrapper bg-success-light">
+                    <i class="fas fa-check-double stat-icon text-success"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 class="stat-value">312</h3>
+                    <p class="stat-label">Complaints Resolved</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon-wrapper bg-warning-light">
+                    <i class="fas fa-hourglass-half stat-icon text-warning"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 class="stat-value">116</h3>
+                    <p class="stat-label">Pending Complaints</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Charts Layout Grid -->
+        <section class="charts-container">
+            
+            <!-- Resolution Performance Chart (Bar) -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Resolution Performance (This Year)</h3>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="resolutionChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Complaint Category Distribution (Doughnut) -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Issue Breakdown</h3>
+                </div>
+                <div class="chart-wrapper" style="display: flex; justify-content: center; align-items: center;">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Department Workload Timeline (Line) -->
+        <section class="chart-card full-width-chart">
+            <div class="chart-header">
+                <h3 class="chart-title">Workload Trend (Trailing 6 Months)</h3>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="workloadChart"></canvas>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Shared script for theme toggle -->
+    <script src="script.js"></script>
+
+    <!-- Chart Implementations -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Reusable KSGMS Colors
+            const colorPrimary = '#1E3A8A';      // Deep Blue
+            const colorPrimaryLight = '#3B82F6'; // Light Blue
+            const colorSecondary = '#14B8A6';    // Teal/Green Accent
+            const colorSecondaryAlt = '#10B981'; // Green
+            const colorWarning = '#F59E0B';      // Orange
+            
+            // Common Chart Options
+            const commonOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: { family: "'Inter', sans-serif" },
+                            usePointStyle: true,
+                            padding: 20
+                        }
+                    }
+                }
+            };
+
+            // 1. Resolution Performance Chart (Bar)
+            const ctxResolution = document.getElementById('resolutionChart').getContext('2d');
+            new Chart(ctxResolution, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+                    datasets: [
+                        {
+                            label: 'Resolved',
+                            data: [42, 38, 55, 48, 62, 59, 71, 65, 82, 45],
+                            backgroundColor: colorSecondaryAlt,
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Pending',
+                            data: [12, 18, 15, 22, 10, 14, 8, 16, 9, 38],
+                            backgroundColor: colorWarning,
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        x: { stacked: true, grid: { display: false } },
+                        y: { stacked: true, border: { display: false } }
+                    }
+                }
+            });
+
+            // 2. Issue Category Breakdown Chart (Doughnut)
+            // Focused entirely on Electricity sub-categories assuming this is KSEB Dept Dashboard
+            const ctxCategory = document.getElementById('categoryChart').getContext('2d');
+            new Chart(ctxCategory, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Streetlights', 'Power Outages', 'Voltage Issues', 'Transformers', 'Wiring'],
+                    datasets: [{
+                        data: [35, 30, 15, 12, 8],
+                        backgroundColor: [
+                            colorPrimary,
+                            colorPrimaryLight,
+                            colorSecondary,
+                            colorWarning,
+                            '#64748B'
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { family: "'Inter', sans-serif", size: 11 },
+                                boxWidth: 10,
+                                padding: 15
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 3. Department Workload Trend (Line)
+            const ctxWorkload = document.getElementById('workloadChart').getContext('2d');
+            
+            // Create Gradient for Line Chart
+            let gradient = ctxWorkload.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(59, 130, 246, 0.5)'); // primary-light
+            gradient.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
+
+            new Chart(ctxWorkload, {
+                type: 'line',
+                data: {
+                    labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+                    datasets: [{
+                        label: 'Total Complaints Received',
+                        data: [72, 73, 79, 81, 91, 83], // Sum of mock resolved + pending
+                        borderColor: colorPrimaryLight,
+                        backgroundColor: gradient,
+                        borderWidth: 3,
+                        pointBackgroundColor: colorPrimary,
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: colorPrimary,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        fill: true,
+                        tension: 0.4 // Smooth curves
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { 
+                            beginAtZero: true, 
+                            border: { display: false },
+                            grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

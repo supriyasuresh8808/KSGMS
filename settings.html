@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Settings - KSGMS</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        .page-header {
+            margin-bottom: 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .page-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* Settings Layout Layout */
+        .settings-container {
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        .settings-card {
+            background-color: var(--surface);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            transition: var(--transition);
+            margin-bottom: 2rem;
+        }
+        
+        .settings-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border);
+            background-color: rgba(30,58,138, 0.02);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .card-icon {
+            color: var(--primary);
+            font-size: 1.25rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .settings-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 0;
+            border-bottom: 1px solid var(--border);
+            gap: 2rem;
+        }
+
+        .settings-group:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .settings-group:first-child {
+            padding-top: 0;
+        }
+
+        .setting-info h4 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0 0 0.25rem 0;
+        }
+
+        .setting-info p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .setting-control {
+            flex-shrink: 0;
+            min-width: 200px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        /* Form Controls */
+        .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            background-color: var(--background);
+            font-family: inherit;
+            cursor: pointer;
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="none" class="w-4 h-4" stroke="%2364748b" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>');
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1rem;
+            padding-right: 2.5rem;
+            transition: var(--transition);
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Custom Toggle Switch Component */
+        .switch-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .switch-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(100, 116, 139, 0.2);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        input:checked + .slider {
+            background-color: #10B981; /* Green */
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+        /* Radio Buttons Group for Theme */
+        .theme-selector {
+            display: flex;
+            gap: 0.75rem;
+            background-color: var(--background);
+            padding: 0.35rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+        }
+
+        .theme-option {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            color: var(--text-secondary);
+        }
+
+        .theme-option input {
+            display: none;
+        }
+
+        .theme-option.active {
+            background-color: var(--surface);
+            color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .theme-option i {
+            margin-right: 0.4rem;
+        }
+
+        /* Action Footer */
+        .settings-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn-reset {
+            background-color: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-reset:hover {
+            background-color: var(--background);
+            color: var(--text-primary);
+        }
+
+        .btn-save {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-save:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        @media (max-width: 650px) {
+            .settings-group {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            .setting-control {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            .settings-footer {
+                flex-direction: column-reverse;
+            }
+            .btn-save, .btn-reset {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Dark Theme overrides for specific components */
+        [data-theme="dark"] .settings-card { border-color: var(--border); background-color: var(--surface); }
+        [data-theme="dark"] .card-header { background-color: rgba(255,255,255,0.02); }
+        [data-theme="dark"] .settings-group { border-color: var(--border); }
+        [data-theme="dark"] .form-select {
+            background-image: url('data:image/svg+xml;utf8,<svg fill="none" class="w-4 h-4" stroke="%2394a3b8" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>');
+        }
+        [data-theme="dark"] .theme-selector { background-color: rgba(0,0,0,0.2); border-color: var(--border); }
+        [data-theme="dark"] .theme-option.active { background-color: var(--surface); color: white; }
+        [data-theme="dark"] .slider { background-color: rgba(255,255,255,0.1); }
+    </style>
+</head>
+
+<body class="dashboard-page">
+
+    <!-- Universal KSGMS Nav -->
+    <nav class="navbar dashboard-navbar">
+        <div class="nav-container nav-container-fluid">
+            <a href="index.html" class="nav-logo" style="text-decoration: none;">
+                <img src="logo.jpg" alt="KSGMS Logo" class="logo-icon logo-img"
+                    onerror="this.src='https://via.placeholder.com/80x30?text=KSGMS'">
+                <span class="logo-text">KSGMS</span>
+            </a>
+            <div class="nav-links">
+                <!-- Generic back link -->
+                <a href="javascript:history.back()" class="nav-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+                <a href="settings.html" class="nav-link active">Settings</a>
+                <!-- Hidden generic dark mode toggler since we control it via the page -->
+            </div>
+            <div class="user-profile-menu">
+                <img src="https://ui-avatars.com/api/?name=Alex+Johnson&background=1E3A8A&color=fff" alt="User Avatar" class="avatar-sm">
+                <a href="login.html" class="nav-link text-danger" style="color: #ef4444 !important; font-weight: 600;">Logout <i class="fas fa-sign-out-alt"></i></a>
+            </div>
+            <div class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Layout -->
+    <main class="dashboard-container settings-container">
+        
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">System Settings</h1>
+                <p class="page-subtitle">Configure your preferences and notification alerts across the platform.</p>
+            </div>
+        </div>
+
+        <form id="settingsForm" onsubmit="saveSettings(event)">
+            
+            <!-- Global Preferences Card -->
+            <section class="settings-card">
+                <div class="card-header">
+                    <i class="fas fa-globe card-icon"></i>
+                    <h3 class="card-title">Global Preferences</h3>
+                </div>
+                
+                <div class="card-body">
+                    <div class="settings-group">
+                        <div class="setting-info">
+                            <h4>Language Preference</h4>
+                            <p>Choose the default language for the KSGMS dashboard interface and system notifications.</p>
+                        </div>
+                        <div class="setting-control">
+                            <select class="form-select" id="langPref">
+                                <option value="en" selected>English (Default)</option>
+                                <option value="ml">Malayalam (മലയാളം)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <div class="setting-info">
+                            <h4>Theme Mode</h4>
+                            <p>Select your interface color scheme. "Light Mode" ensures clear readability, while "Dark Mode" reduces eye strain.</p>
+                        </div>
+                        <div class="setting-control">
+                            <div class="theme-selector">
+                                <label class="theme-option active" id="themeLightOption">
+                                    <input type="radio" name="themeMode" value="light" checked onchange="previewThemeContext('light')">
+                                    <i class="fas fa-sun"></i> Light
+                                </label>
+                                <label class="theme-option" id="themeDarkOption">
+                                    <input type="radio" name="themeMode" value="dark" onchange="previewThemeContext('dark')">
+                                    <i class="fas fa-moon"></i> Dark
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Notifications Card -->
+            <section class="settings-card">
+                <div class="card-header" style="background-color: rgba(16, 185, 129, 0.02);">
+                    <i class="fas fa-bell card-icon" style="color: #10B981;"></i>
+                    <h3 class="card-title">Notification Alerts</h3>
+                </div>
+                
+                <div class="card-body">
+                    
+                    <div class="settings-group">
+                        <div class="setting-info">
+                            <h4>Email Notifications</h4>
+                            <p>Receive complaint updates, status assignments, and system announcements via email.</p>
+                        </div>
+                        <div class="setting-control">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="notifEmail" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <div class="setting-info">
+                            <h4>SMS Notifications</h4>
+                            <p>Receive critical tracking updates directly to your registered mobile device via SMS text message.</p>
+                        </div>
+                        <div class="setting-control">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="notifSms" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <div class="setting-info">
+                            <h4>In-App Push Alerts</h4>
+                            <p>Receive real-time floating banners whenever a department officer replies to a live complaint.</p>
+                        </div>
+                        <div class="setting-control">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="notifPush">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Submit Elements -->
+            <div class="settings-footer">
+                <button type="button" class="btn-reset" onclick="resetToDefaults()">
+                    <i class="fas fa-undo-alt" style="margin-right: 4px;"></i> Reset to Defaults
+                </button>
+                <button type="submit" class="btn-save" id="saveBtn">
+                    <i class="fas fa-save"></i> Save Settings
+                </button>
+            </div>
+
+        </form>
+    </main>
+
+    <!-- Base UI Script inclusion for baseline functionality -->
+    <script src="script.js"></script>
+
+    <!-- Page Specific Logic -->
+    <script>
+        // Check current system theme from localStorage logic mapped in script.js on load
+        document.addEventListener("DOMContentLoaded", () => {
+            if (document.body.getAttribute('data-theme') === 'dark') {
+                document.querySelector('input[name="themeMode"][value="dark"]').checked = true;
+                document.getElementById('themeDarkOption').classList.add('active');
+                document.getElementById('themeLightOption').classList.remove('active');
+            }
+        });
+
+        // Interactive visual toggle for radio design
+        function previewThemeContext(theme) {
+            document.querySelectorAll('.theme-option').forEach(el => el.classList.remove('active'));
+            
+            if (theme === 'dark') {
+                document.getElementById('themeDarkOption').classList.add('active');
+                // Temporarily apply theme to body for instant preview before save
+                document.body.setAttribute('data-theme', 'dark');
+            } else {
+                document.getElementById('themeLightOption').classList.add('active');
+                document.body.removeAttribute('data-theme');
+            }
+        }
+
+        // Submitting settings form
+        function saveSettings(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('saveBtn');
+            const originalText = btn.innerHTML;
+            
+            // Animation state
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Applying...';
+            btn.style.opacity = '0.8';
+
+            // Simulate Network save event
+            setTimeout(() => {
+                
+                // Read and Apply the Theme permanently via localStorage standard
+                const isDark = document.querySelector('input[name="themeMode"][value="dark"]').checked;
+                if (isDark) {
+                    localStorage.setItem('theme', 'dark');
+                    document.body.setAttribute('data-theme', 'dark');
+                } else {
+                    localStorage.setItem('theme', 'light');
+                    document.body.removeAttribute('data-theme');
+                }
+
+                alert("Success: Your system preferences and notification settings have been updated across your devices.");
+                
+                // Revert styling
+                btn.innerHTML = '<i class="fas fa-check"></i> Saved Successfully';
+                btn.style.backgroundColor = '#10B981'; // Success Green
+                btn.style.color = '#fff';
+
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.backgroundColor = '';
+                    btn.style.opacity = '1';
+                }, 2000);
+
+            }, 800);
+        }
+
+        function resetToDefaults() {
+            if (confirm("Are you sure you want to revert all configurations back to the system defaults?")) {
+                
+                // Set language
+                document.getElementById('langPref').value = 'en';
+
+                // Set theme to light
+                document.querySelector('input[name="themeMode"][value="light"]').checked = true;
+                previewThemeContext('light');
+
+                // Set notifications defaults
+                document.getElementById('notifEmail').checked = true;
+                document.getElementById('notifSms').checked = true;
+                document.getElementById('notifPush').checked = false;
+
+            }
+        }
+    </script>
+</body>
+
+</html>
